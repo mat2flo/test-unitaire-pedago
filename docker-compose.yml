@@ -7,10 +7,10 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/code
+      - .:/app
+      - /app/node_modules
     env_file:
       - .env
-    command: npm run watch
   mongodb:
     image: mongo
     restart: always
