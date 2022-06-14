@@ -1,5 +1,3 @@
-print('Start #################################################################');
-
 db.createUser(
     {
         user: 'user',
@@ -11,9 +9,8 @@ db.createCollection('users');
 
 db.users.insert(
     {
-        name: "User 1",
-        amount: 5,
+        id: 1,
+        name: "John Doe",
+        amount: 0,
     }
-)
-
-print('End #################################################################');
+);

@@ -10,4 +10,7 @@ module.exports = app => {
     app.get('/users/:id/accounts/', accounts)
     app.put('/users/:id/accounts/credit', credit)
     app.put('/users/:id/accounts/debit', debit)
+    // app.get('/test', (req, res) => {
+    //     console.log(mongoose.connection.readyState);
+    // })
 }

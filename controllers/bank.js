@@ -3,18 +3,17 @@ const MIN_CEILING = 0
 const BEGIN_RANGE_MAIL_TO_SEND = 22
 const END_RANGE_MAIL_TO_SEND = 6
 
-const checkIfDebitAuthorized = (currentBankBalance, amountToDebit) => {
-    if (currentBankBalance - amountToDebit >= 0)
+const isDebitAuthorized = (currentBankBalance, amountToDebit) => {
+    if (currentBankBalance - amountToDebit >= MIN_CEILING)
         return true
     return false
 }
 
-const checkIfCreditAuthorized = (currentBankBalance, amountToDebit) => {
-    if (currentBankBalance + amountToDebit <= 1000)
+const isCreditAuthorized = (currentBankBalance, amountToDebit) => {
+    if (currentBankBalance + amountToDebit <= MAX_CEILING)
         return true
     return false
 }
-
 
 const isTimestampBetweenRangeHoursMailToSend = (timestampServerRequest) => {
     const hourRequest = timestampServerRequest.getHours()
@@ -22,6 +21,6 @@ const isTimestampBetweenRangeHoursMailToSend = (timestampServerRequest) => {
 }
 
 module.exports = {
-    checkIfDebitAuthorized, checkIfCreditAuthorized, isTimestampBetweenRangeHoursMailToSend
+    isDebitAuthorized, isCreditAuthorized, isTimestampBetweenRangeHoursMailToSend
 }
 
