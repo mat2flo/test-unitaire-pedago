@@ -1,18 +1,10 @@
 const express = require("express");
 var router = express.Router();
-const User = require("../models/User");
 
-const { debit, credit, accounts } = require("../controllers/users.js");
+const { debit, credit, accounts, createUser, getAllUsers, userExists } = require("../controllers/users.js");
 
-const userExists = async (req, res, next) => {
-  try {
-    const userExists = await User.findById(1);
-    if (!userExists) res.status(500).send("User does not exist");
-    else next();
-  } catch (error) {
-    next(error);
-  }
-};
+router.get("/", getAllUsers);
+router.post("/create", createUser);
 
 router.use("/:id", userExists);
 router.get("/:id/accounts/", accounts);
