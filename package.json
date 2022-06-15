@@ -4,7 +4,7 @@
   "description": "simple hello world",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose --runInBand --detectOpenHandles",
     "start": "node app.js",
     "watch": "nodemon -L app.js"
   },
@@ -14,6 +14,13 @@
     "nodemon": "^2.0.16"
   },
   "devDependencies": {
-    "jest": "^28.1.1"
+    "@shelf/jest-mongodb": "^3.0.1",
+    "jest": "^28.1.1",
+    "mongodb-memory-server": "^8.6.0"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node"
+
   }
 }

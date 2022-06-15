@@ -3,7 +3,7 @@ const {
   isDebitAuthorized,
   isCreditAuthorized,
 } = require("./bank.js");
-
+const { creditService, debitService } = require("../services/account.js");
 const User = require("../models/User");
 
 const userExists = async (req, res, next) => {
@@ -20,26 +20,37 @@ const accounts = async (req, res) => {
   return res.send("ok");
 };
 
-const debit = (req, res) => {
-  const payload = req.body;
-  const idUser = req.params.id;
-  if (checkIfDebitAuthorized) {
-    //TODO:debit in db
-    if (isTimestampBetweenRangeHoursMailToSend) {
-      emailSender();
-    }
-    return res.send("ok");
+const debit = async (req, res, next) => {
+  let user;
+  try {
+    user = await debitService(req.params.id, req.body.amount);
+  } catch (error) {
+    return next(error);
   }
+  return res.send({
+    message: "ok",
+    id: user.id,
+    debit: req.body.amount,
+    newAmount: user.amount,
+  });
 };
 
-const credit = (req, res) => {
-  const payload = req.body;
-  const idUser = req.params.id;
-  //TODO:credit in db
-  if (isTimestampBetweenRangeHoursMailToSend) {
+const credit = async (req, res, next) => {
+  let user;
+  try {
+    user = await creditService(req.params.id, req.body.amount);
+  } catch (error) {
+    return next(error);
+  }
+  if (isTimestampBetweenRangeHoursMailToSend(new Date())) {
     emailSender();
   }
-  return res.send("ok");
+  return res.send({
+    message: "ok",
+    id: user.id,
+    credit: req.body.amount,
+    newAmount: user.amount,
+  });
 };
 
 // create a new user
