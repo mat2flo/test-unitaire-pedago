@@ -1,8 +1,3 @@
-const {
-  isTimestampBetweenRangeHoursMailToSend,
-  isDebitAuthorized,
-  isCreditAuthorized,
-} = require("./bank.js");
 const { creditService, debitService } = require("../services/account.js");
 const User = require("../models/User");
 
@@ -17,7 +12,13 @@ const userExists = async (req, res, next) => {
 };
 
 const accounts = async (req, res) => {
-  return res.send("ok");
+  const user = await User.findById(req.params.id);
+  return res.send({
+    user: {
+      name: user.name,
+      amount: user.amount,
+    },
+  });
 };
 
 const debit = async (req, res, next) => {
@@ -41,9 +42,6 @@ const credit = async (req, res, next) => {
     user = await creditService(req.params.id, req.body.amount);
   } catch (error) {
     return next(error);
-  }
-  if (isTimestampBetweenRangeHoursMailToSend(new Date())) {
-    emailSender();
   }
   return res.send({
     message: "ok",
