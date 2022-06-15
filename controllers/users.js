@@ -1,4 +1,5 @@
 const { creditService, debitService } = require("../services/account.js");
+const { isAmountWantedInBankAccountAuthorized } = require("../controllers/bank.js");
 const User = require("../models/User");
 
 const userExists = async (req, res, next) => {
@@ -21,10 +22,16 @@ const accounts = async (req, res) => {
   });
 };
 
+const isPayloadCorrect = (payload) => {
+  return typeof payload?.amount === 'number';
+};
+
 const debit = async (req, res, next) => {
   let user;
   try {
-    user = await debitService(req.params.id, req.body.amount);
+    if (!isPayloadCorrect(req.body)) throw new Error('Must be a number');
+    user = await User.findById(req.params.id);
+    user = await debitService(user, req.body.amount);
   } catch (error) {
     return next(error);
   }
@@ -36,10 +43,13 @@ const debit = async (req, res, next) => {
   });
 };
 
+
 const credit = async (req, res, next) => {
   let user;
   try {
-    user = await creditService(req.params.id, req.body.amount);
+    if (!isPayloadCorrect(req.body)) throw new Error('Must be a number');
+    user = await User.findById(req.params.id);
+    user = await creditService(user, req.body.amount);
   } catch (error) {
     return next(error);
   }
@@ -54,21 +64,23 @@ const credit = async (req, res, next) => {
 // create a new user
 const createUser = async (req, res) => {
   const payload = req.body;
+  if (!isAmountWantedInBankAccountAuthorized(payload.amount))
+    return res.status(500).send("Amount not authorized");
   try {
     const user = await User.create(payload);
     return res.send(user);
   } catch (error) {
-    return res.status(500).send(error);
+    return next(error);
   }
 };
 
 // get all users
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find();
     return res.send(users);
   } catch (error) {
-    return res.status(500).send(error);
+    return next(error);
   }
 };
 
@@ -79,4 +91,5 @@ module.exports = {
   createUser,
   getAllUsers,
   userExists,
+  isPayloadCorrect,
 };

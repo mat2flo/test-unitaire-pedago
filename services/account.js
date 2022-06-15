@@ -6,8 +6,7 @@ const {
 } = require("../controllers/bank");
 const { emailSender } = require("../services/emailSender.js");
 
-const creditService = async (idUser, amount) => {
-  const user = await User.findById(idUser);
+const creditService = async (user, amount) => {
   if (!isCreditAuthorized(user.amount, amount))
     throw new Error("Credit not authorized");
   user.amount += amount;
@@ -18,8 +17,7 @@ const creditService = async (idUser, amount) => {
   return user;
 };
 
-const debitService = async (idUser, amount) => {
-  const user = await User.findById(idUser);
+const debitService = async (user, amount) => {
   if (!isDebitAuthorized(user.amount, amount))
     throw new Error("Debit not authorized");
   user.amount -= amount;
@@ -31,3 +29,4 @@ const debitService = async (idUser, amount) => {
 };
 
 module.exports = { creditService, debitService };
+

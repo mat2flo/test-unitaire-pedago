@@ -3,6 +3,10 @@ const MIN_CEILING = 0;
 const BEGIN_RANGE_MAIL_TO_SEND = 22;
 const END_RANGE_MAIL_TO_SEND = 6;
 
+const isAmountWantedInBankAccountAuthorized = (amount) => {
+  return amount >= MIN_CEILING && amount <= MAX_CEILING
+}
+
 const isDebitAuthorized = (currentBankBalance, amountToDebit) => {
   if (
     currentBankBalance > MAX_CEILING ||
@@ -29,7 +33,7 @@ const isTimestampBetweenRangeHoursMailToSend = (timestampServerRequest) => {
   const hourRequest = timestampServerRequest.getHours();
   return (
     (hourRequest >= BEGIN_RANGE_MAIL_TO_SEND && hourRequest <= 23) ||
-    (hourRequest >= 0 && hourRequest < 18)
+    (hourRequest >= 0 && hourRequest < END_RANGE_MAIL_TO_SEND)
   );
 };
 
@@ -37,4 +41,5 @@ module.exports = {
   isDebitAuthorized,
   isCreditAuthorized,
   isTimestampBetweenRangeHoursMailToSend,
+  isAmountWantedInBankAccountAuthorized,
 };
