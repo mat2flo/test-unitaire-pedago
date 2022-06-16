@@ -5,7 +5,7 @@ const User = require("../models/User");
 const userExists = async (req, res, next) => {
   try {
     const userExists = await User.findById(req.params.id);
-    if (!userExists) res.status(500).send("User does not exist");
+    if (!userExists) throw new Error('User does not exist');
     else next();
   } catch (error) {
     next(error);
