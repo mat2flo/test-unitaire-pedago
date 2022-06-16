@@ -22,23 +22,28 @@ const accounts = async (req, res) => {
   });
 };
 
-const isPayloadCorrect = (payload) => {
-  return typeof payload?.amount === 'number';
+const isPayloadCorrect = (amount) => {
+  return typeof amount === 'number' && !isNaN(amount);
 };
+
+const castNumber = (number) => {
+  return Number(number);
+}
 
 const debit = async (req, res, next) => {
   let user;
+  let amount = castNumber(req.body.amount);
   try {
-    if (!isPayloadCorrect(req.body)) throw new Error('Must be a number');
+    if (!isPayloadCorrect(amount)) throw new Error('Must be a number');
     user = await User.findById(req.params.id);
-    user = await debitService(user, req.body.amount);
+    user = await debitService(user, amount);
   } catch (error) {
     return next(error);
   }
   return res.send({
     message: "ok",
-    id: user.id,
-    debit: req.body.amount,
+    id: +user.id,
+    debit: amount,
     newAmount: user.amount,
   });
 };
@@ -46,17 +51,18 @@ const debit = async (req, res, next) => {
 
 const credit = async (req, res, next) => {
   let user;
+  let amount = castNumber(req.body.amount);
   try {
-    if (!isPayloadCorrect(req.body)) throw new Error('Must be a number');
+    if (!isPayloadCorrect(amount)) throw new Error('Must be a number');
     user = await User.findById(req.params.id);
-    user = await creditService(user, req.body.amount);
+    user = await creditService(user, amount);
   } catch (error) {
     return next(error);
   }
   return res.send({
     message: "ok",
-    id: user.id,
-    credit: req.body.amount,
+    id: +user.id,
+    credit: amount,
     newAmount: user.amount,
   });
 };
