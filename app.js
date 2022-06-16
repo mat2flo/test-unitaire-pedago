@@ -14,7 +14,6 @@ const app = express();
 app.use(express.json());
 app.use("/users", users);
 app.use((err, req, res, next) => {
-  console.error(err.stack)
   res.status(500).send({"error": err.message})
 })
 
