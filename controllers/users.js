@@ -62,13 +62,13 @@ const credit = async (req, res, next) => {
 };
 
 // create a new user
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const payload = req.body;
   if (!isAmountWantedInBankAccountAuthorized(payload.amount))
     return res.status(500).send("Amount not authorized");
   try {
     const user = await User.create(payload);
-    return res.send(user);
+    return res.status(201).send(user);
   } catch (error) {
     return next(error);
   }
