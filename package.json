@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "jest --verbose --runInBand --detectOpenHandles",
-    "test:ci": "jest --ci --reporters='default' --reporters='./github-actions-reporter'",
     "newman": "newman run integration_test.postman_collection.json",
+    "newman-data": "newman run integration_test.postman_collection.json -d tests/csv/debit-values.csv --folder 'Credit user' --folder 'Debit user'",
     "start": "node app.js",
     "watch": "nodemon -L app.js"
   },
