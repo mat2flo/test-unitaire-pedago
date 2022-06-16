@@ -50,17 +50,8 @@ describe("Bank isTimestampBetweenRangeHoursMailToSend", () => {
 
 describe("Bank isPayloadCorrect", () => {
   it("payload is correct", async () => {
-    const payload = {
-      amount: 10
-    };
-    expect(isPayloadCorrect(payload)).toBeTruthy();
-  });
-
-  it("payload incorrect", async () => {
-    const payload = {
-      amount: "10"
-    };
-    expect(isPayloadCorrect(payload)).toBeFalsy();
+    const amount = 10
+    expect(isPayloadCorrect(amount)).toBeTruthy();
   });
 })
 
