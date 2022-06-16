@@ -66,9 +66,28 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});"
+							"let passed;",
+							"const res = pm.response.json();",
+							"try {",
+							"    pm.response.to.have.status(201);",
+							"    passed = true;",
+							"} catch (err) {",
+							"    passed = false;",
+							"}",
+							"if (passed) {",
+							"    pm.test(\"Test payload - Status 200\", function () {",
+							"        pm.expect(res).to.be.a('object');",
+							"        pm.expect(res._id).to.be.a('number');",
+							"        pm.expect(res.name).to.be.a('string');",
+							"        pm.expect(res.amount).to.be.a('number');",
+							"    });",
+							"}",
+							"else {",
+							"    pm.test(\"Test payload - Status 500\", function () {",
+							"        pm.response.to.have.status(500);",
+							"        pm.expect(res.error).to.be.a('string');",
+							"    });",
+							"}"
 						],
 						"type": "text/javascript"
 					}
@@ -79,7 +98,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{{req_body}}",
+					"raw": "{\n    \"_id\": 50,\n    \"name\": \"John Doe\",\n    \"amount\": 0\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -240,6 +259,27 @@
 		},
 		{
 			"name": "Get user account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Test get one user response\", () => {",
+							"    let res = pm.response.json();",
+							"    pm.expect(res).to.be.a('object');",
+							"    pm.expect(res.id).to.be.a('number');",
+							"    pm.expect(res.name).to.be.a('string');",
+							"    pm.expect(res.amount).to.be.a('number');",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],

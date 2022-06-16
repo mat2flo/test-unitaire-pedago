@@ -15,10 +15,9 @@ const userExists = async (req, res, next) => {
 const accounts = async (req, res) => {
   const user = await User.findById(req.params.id);
   return res.send({
-    user: {
+      id: user._id,
       name: user.name,
       amount: user.amount,
-    },
   });
 };
 
