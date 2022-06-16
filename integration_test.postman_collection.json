@@ -8,6 +8,30 @@
 	"item": [
 		{
 			"name": "Get all users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Test all users response\", () => {",
+							"    let res = pm.response.json();",
+							"    pm.expect(res).to.be.a('array');",
+							"",
+							"    _.each(res, (item) => {",
+							"        pm.expect(item._id).to.be.a('number');",
+							"        pm.expect(item.name).to.be.a('string');",
+							"        pm.expect(item.amount).to.be.a('number');",
+							"    });",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -28,12 +52,34 @@
 		},
 		{
 			"name": "Create user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"_id\": 10,\r\n    \"name\": \"Test\",\r\n    \"amount\": 0\r\n}",
+					"raw": "{{req_body}}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -62,11 +108,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"var abody = {\r",
-							"    amount: 1\r",
-							"}\r",
-							"\r",
-							"pm.environment.set(\"req_body\", JSON.stringify(abody));"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -75,7 +117,29 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"let passed;",
+							"const res = pm.response.json();",
+							"try {",
+							"    pm.response.to.have.status(200);",
+							"    passed = true;",
+							"} catch (err) {",
+							"    passed = false;",
+							"}",
+							"if (passed) {",
+							"    pm.test(\"Test payload - Status 200\", function () {",
+							"        pm.expect(res).to.be.a('object');",
+							"        pm.expect(res.message).to.be.a('string').contain(\"ok\");",
+							"        pm.expect(res.id).to.be.a('number');",
+							"        pm.expect(res.credit).to.be.a('number');",
+							"        pm.expect(res.newAmount).to.be.a('number');",
+							"    });",
+							"}",
+							"else {",
+							"    pm.test(\"Test payload - Status 500\", function () {",
+							"        pm.response.to.have.status(500);",
+							"        pm.expect(res.error).to.be.a('string');",
+							"    });",
+							"}"
 						],
 						"type": "text/javascript"
 					}
@@ -86,7 +150,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{{req_body}}",
+					"raw": "{\n    \"amount\": {{amount}}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -112,12 +176,45 @@
 		},
 		{
 			"name": "Debit user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let passed;",
+							"const res = pm.response.json();",
+							"try {",
+							"    pm.response.to.have.status(200);",
+							"    passed = true;",
+							"} catch (err) {",
+							"    passed = false;",
+							"}",
+							"if (passed) {",
+							"    pm.test(\"Test payload - Status 200\", function () {",
+							"        pm.expect(res).to.be.a('object');",
+							"        pm.expect(res.message).to.be.a('string').contain(\"ok\");",
+							"        pm.expect(res.id).to.be.a('number');",
+							"        pm.expect(res.debit).to.be.a('number');",
+							"        pm.expect(res.newAmount).to.be.a('number');",
+							"    });",
+							"}",
+							"else {",
+							"    pm.test(\"Test payload - Status 500\", function () {",
+							"        pm.response.to.have.status(500);",
+							"        pm.expect(res.error).to.be.a('string');",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"amount\": 100\r\n}",
+					"raw": "{\r\n    \"amount\": {{amount}}\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -179,21 +276,9 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					"pm.test(\"Status test\", function () {",
-					"    pm.response.to.have.status(200);",
-					"});"
+					""
 				]
 			}
-		}
-	],
-	"variable": [
-		{
-			"key": "amount",
-			"value": ""
-		},
-		{
-			"key": "amounts",
-			"value": ""
 		}
 	]
 }
