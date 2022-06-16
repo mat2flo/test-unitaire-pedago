@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "jest --verbose --runInBand --detectOpenHandles",
+    "test:ci": "jest --ci --reporters='default' --reporters='./github-actions-reporter'",
     "start": "node app.js",
     "watch": "nodemon -L app.js"
   },
